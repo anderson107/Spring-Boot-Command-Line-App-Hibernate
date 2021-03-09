@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class AppHibernateApplication {
 	
 	public AppHibernateApplication() {
-		new Application();
+		new Application().displayMenu();
 	}
 
 	public static void main(String[] args) {
