@@ -1,10 +1,8 @@
 package com.alpha.dao;
 
-import java.sql.Connection;
-import java.sql.Statement;
 import java.util.List;
 
-import javax.sql.DataSource;
+import org.hibernate.SessionFactory;
 
 import com.alpha.entities.customer.Customer;
 
@@ -16,5 +14,5 @@ public interface CustomerDao {
 	public void insert(Customer customer);
 	public void delete(int id);
 	public void update(Customer customer);
-    public void setDataSource(DataSource conn);
+    public void setSessionFactory(SessionFactory session);
 }

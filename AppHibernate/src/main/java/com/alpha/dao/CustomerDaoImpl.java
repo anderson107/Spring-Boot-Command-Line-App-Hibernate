@@ -1,94 +1,76 @@
 package com.alpha.dao;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.sql.DataSource;
 
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alpha.entities.customer.Customer;
 
-@Repository("customerDao")
+@Transactional
+@Repository("customerDaol")
 public class CustomerDaoImpl implements CustomerDao {
 
-	//private fields
+	// private fields
 	private static Logger logger = LoggerFactory.getLogger(CustomerDaoImpl.class);
-	private DataSource dataSource;
-	private SelectAllCustomers selectAllCustomers;
-	private SelectCustomerById selectCustomerById;
-	private InsertNewCustomer insertNewCustomer;
-	
-	
+	private SessionFactory sessionFactory;
+
 	// constructors
 	public CustomerDaoImpl() {
-		
+
 	}
-	
-	@Resource(name="dataSource")
+
+	@Resource(name = "sessionFactory")
 	@Override
-	public void setDataSource(DataSource conn) {
-		this.dataSource = conn;
-		this.selectAllCustomers = new SelectAllCustomers(dataSource);
-		this.selectCustomerById = new SelectCustomerById(dataSource);
-		this.insertNewCustomer = new InsertNewCustomer(dataSource);
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 
 	// CRUD methods
 	// return all customers
+	@Transactional(readOnly = true)
 	@Override
 	public List<Customer> findAll() {
-		return selectAllCustomers.execute();
+
+		return sessionFactory.getCurrentSession().createQuery("from Customer").list();
 	}
 
 	// return customer by Id input
+	@Transactional(readOnly = true)
 	@Override
 	public Customer findCustomer(int customerId) {
-		Object[]params = new Object[1];
-		params[0] = customerId;
-		List<Customer> customers = selectCustomerById.execute(params);
-		if(customers.size()>0) {
-			return customers.get(0);
-		}else {
-			return null;
-		}
+
+		Customer customer = (Customer) sessionFactory.getCurrentSession().getNamedQuery("Customer_ById")
+				.setParameter("customer_id", customerId).uniqueResult();
+		
+		return customer;
 	}
 
 	// insert customer object into DB
 	@Override
 	public void insert(Customer customer) {
-
-		Map<String, Object> map = new HashMap<>();
-		map.put("first_name", customer.getFirstName());
-		map.put("last_name", customer.getLastName());
-		map.put("address", customer.getAddress());
-		map.put("email", customer.getEmail());
-		KeyHolder keyHolder = new GeneratedKeyHolder();
-		insertNewCustomer.updateByNamedParam(map, keyHolder);
-		customer.setId(keyHolder.getKey().intValue());
-		logger.info("New customer added with id: " + customer.getId());
+		sessionFactory.getCurrentSession().saveOrUpdate(customer);
+		logger.info("Customer added successfully with id " + customer.getId());
 	}
 
 	// it removes customer from DB by id input
 	@Override
 	public void delete(int id) {
-
-		String query = "delete from customer where customer_id=" + id;
-		String query2 = "select * from customer where customer_id =" + id;
+		Customer customer = findCustomer(id);
+		sessionFactory.getCurrentSession().delete(customer);
+		logger.info("Customer with id " + id + "deleted successfully");
 	}
 
 	// it updates customer data
 	@Override
 	public void update(Customer customer) {
-
-		String query = "update customer set first_name = ?, last_name = ?, address = ?, email = ? where customer_id = ?";
-		
+		sessionFactory.getCurrentSession().saveOrUpdate(customer);
+		logger.info("Customer updated successfully");
 	}
 
 }

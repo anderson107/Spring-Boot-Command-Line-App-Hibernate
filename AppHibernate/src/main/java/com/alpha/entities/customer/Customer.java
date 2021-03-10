@@ -1,12 +1,43 @@
 package com.alpha.entities.customer;
 
-public class Customer {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+@SuppressWarnings("serial")
+@Entity
+@Table(name="customer")
+@NamedQueries({
+	@NamedQuery(name = "Customer_ById",
+			query="from Customer where customer_id = :customer_id"),
+})
+
+public class Customer implements Serializable {
 
 	// private fields
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "CUSTOMER_ID")
 	private int id;
+	
+	@Column(name = "FIRST_NAME")
 	private String firstName;
+	
+	@Column(name = "LAST_NAME")
 	private String lastName;
+	
+	@Column(name = "ADDRESS")
 	private String address;
+	
+	@Column(name = "EMAIL")
 	private String email;
 
 	// constructors

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -21,6 +22,7 @@ import com.alpha.dao.*;
 @Configuration
 @ComponentScan(basePackages = "com.alpha.dao")
 @EnableTransactionManagement
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class DbConfig {
 
 	@Autowired
@@ -33,9 +35,9 @@ public class DbConfig {
 
 	@Lazy
 	@Bean
-	public CustomerDao customerDao() {
+	public CustomerDao customerDao() throws IOException {
 		CustomerDao customer = new CustomerDaoImpl();
-		customer.setDataSource(dataSource());
+		customer.setSessionFactory(sessionFactory());
 		return customer;
 	}
 
