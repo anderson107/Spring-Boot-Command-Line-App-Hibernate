@@ -2,7 +2,7 @@ package com.alpha.dao;
 
 import java.util.List;
 
-import javax.sql.DataSource;
+import org.hibernate.SessionFactory;
 
 import com.alpha.entities.card.Card;
 
@@ -14,5 +14,5 @@ public interface CardDao {
 	public void insert(Card card);
 	public void update(Card card);
 	public void delete(int id);
-	public void setDataSource(DataSource conn);
+	public void setSessionFactory(SessionFactory Factory);
 }

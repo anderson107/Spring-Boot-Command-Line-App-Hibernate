@@ -2,8 +2,13 @@ package com.alpha.entities.card;
 
 import java.time.LocalDate;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 import com.alpha.entities.customer.Customer;
 
+@Entity
+@Table(name = "card")
 public class Visa extends Card{
 
 	// Builder for Visa

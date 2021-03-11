@@ -5,12 +5,21 @@ import javax.persistence.GeneratedValue;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.alpha.entities.card.AmericanExpress;
+import com.alpha.entities.card.Card;
+import com.alpha.entities.card.Mastercard;
+import com.alpha.entities.card.Visa;
 
 @SuppressWarnings("serial")
 @Entity
@@ -19,7 +28,6 @@ import javax.persistence.Table;
 	@NamedQuery(name = "Customer_ById",
 			query="from Customer where customer_id = :customer_id"),
 })
-
 public class Customer implements Serializable {
 
 	// private fields
@@ -39,6 +47,16 @@ public class Customer implements Serializable {
 	
 	@Column(name = "EMAIL")
 	private String email;
+	
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<AmericanExpress> card1 = new HashSet<>();
+	
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<Mastercard> card2 = new HashSet<>();
+	
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<Visa> card3 = new HashSet<>();
+	
 
 	// constructors
 	public Customer() {
@@ -114,6 +132,30 @@ public class Customer implements Serializable {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public Set<AmericanExpress> getCard1() {
+		return card1;
+	}
+
+	public void setCard1(Set<AmericanExpress> card1) {
+		this.card1 = card1;
+	}
+
+	public Set<Mastercard> getCard2() {
+		return card2;
+	}
+
+	public void setCard2(Set<Mastercard> card2) {
+		this.card2 = card2;
+	}
+
+	public Set<Visa> getCard3() {
+		return card3;
+	}
+
+	public void setCard3(Set<Visa> card3) {
+		this.card3 = card3;
 	}
 
 	// to string method

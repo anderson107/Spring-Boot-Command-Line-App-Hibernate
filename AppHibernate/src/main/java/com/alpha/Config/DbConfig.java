@@ -18,6 +18,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.alpha.dao.*;
+import com.alpha.entities.card.AmericanExpress;
+import com.alpha.entities.card.Card;
+import com.alpha.entities.card.Mastercard;
+import com.alpha.entities.card.Visa;
+import com.alpha.entities.customer.Customer;
 
 @Configuration
 @ComponentScan(basePackages = "com.alpha.dao")
@@ -43,9 +48,9 @@ public class DbConfig {
 
 	@Lazy
 	@Bean
-	public CardDao cardDao() {
+	public CardDao cardDao() throws IOException {
 		CardDao card = new CardDaoImpl();
-		card.setDataSource(dataSource());
+		card.setSessionFactory(sessionFactory());
 		return card;
 	}
 	
@@ -66,10 +71,14 @@ public class DbConfig {
 	public SessionFactory sessionFactory() throws IOException {
 		LocalSessionFactoryBean session = new LocalSessionFactoryBean();
 		session.setDataSource(dataSource());
-		session.setPackagesToScan("com.alpha");
+		session.setPackagesToScan("com.alpha.entities");
 		session.setHibernateProperties(hibernateProperties());
 		session.afterPropertiesSet();
-		
+		session.setAnnotatedClasses(Customer.class);
+		session.setAnnotatedClasses(Card.class);
+		session.setAnnotatedClasses(AmericanExpress.class);
+		session.setAnnotatedClasses(Mastercard.class);
+		session.setAnnotatedClasses(Visa.class);
 		return session.getObject();
 	}
 	
